@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Category;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -27,7 +28,8 @@ class ArticleController extends Controller
     
     public function create() : View
     {
-        return view('articles.create');
+        $categories = Category::all();
+        return view('articles.create', compact('categories'));
     }
 
     public function store(Request $request) 
@@ -37,6 +39,9 @@ class ArticleController extends Controller
             'description' => 'required|string',
             'context' => 'required|string',
             'instruction' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+
         ]);
         $slug = Str::slug($request->title);
         $originalSlug = $slug;
@@ -53,6 +58,15 @@ class ArticleController extends Controller
         $article->description = $validatedData['description'];
         $article->context = $validatedData['context'];
         $article->instruction = $validatedData['instruction'];
+        $article->category_id = $validatedData['category_id'];
+       
+        if($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name = time().'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $name);
+            $article->image = $name;
+        }
         $article->save();
     
         return redirect()->route('index');
@@ -72,6 +86,7 @@ public function update(Request $request, Article $article)
         'description' => 'required|string',
         'context' => 'required|string',
         'instruction' => 'required|string',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
     ]);
 
     $slug = Str::slug($request->title);
@@ -88,6 +103,15 @@ public function update(Request $request, Article $article)
     $article->description = $validatedData['description'];
     $article->context = $validatedData['context'];
     $article->instruction = $validatedData['instruction'];
+
+    if($request->hasFile('image')) {
+        $image = $request->file('image');
+        $name = time().'.'.$image->getClientOriginalExtension();
+        $destinationPath = public_path('/images');
+        $image->move($destinationPath, $name);
+        $article->image = $name;
+    }
+
     $article->save();
 
     return redirect()->route('article.show', $article);

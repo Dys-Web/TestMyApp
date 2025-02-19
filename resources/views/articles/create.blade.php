@@ -13,7 +13,7 @@
                 </div>
             @endif
         <div>
-            <form method="POST" action="{{ route('article.store') }}">
+            <form method="POST" action="{{ route('article.store') }}" enctype="multipart/form-data">
                 @csrf
         
                 <div>
@@ -35,7 +35,21 @@
                     <label for="instruction">Instruction:</label><br>
                     <textarea class="rounded-md border py-3 border-slate-500 w-7/12 flex items-center pl-4" id="instruction" rows="5" name="instruction" required>{{ old('instruction') }}</textarea>
                 </div>
+                
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-700">Image :</label>
+                    <input type="file" name="image" id="image" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                </div>
         
+                <div>
+                    <label for="category_id">Catégorie:</label><br>
+                    <select name="category_id" id="category_id" class="rounded-full border py-3 border-slate-500 w-7/12 flex items-center pl-4" required>
+                        <option value="">-- Choisir une catégorie --</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <button class="bg-black rounded-full text-slate-50 p-5 text-base "  type="submit">Enregistrer</button>
             </form>
         </div>

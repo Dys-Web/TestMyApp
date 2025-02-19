@@ -3,13 +3,19 @@
  {{-- Début du post --}}
  <article class="flex flex-col lg:flex-row pb-10 md:pb-16 border-b">
     <div class="lg:w-5/12">
-        <img class="w-full max-h-72 object-cover lg:max-h-none lg:h-full" src="https://via.placeholder.com/640x480.png">
+        @if ($article->image)
+            <img class="w-full max-h-64 object-cover " src="{{ asset('images/'.$article->image) }}" alt="{{ $article->title }}" >
+            
+        @else
+        <img class="w-full max-h-64 object-cover " src="https://via.placeholder.com/640x480.png" alt="Placeholder">
+            
+        @endif
     </div>
     <div class="flex flex-col items-start mt-5 space-y-5 lg:w-7/12 lg:mt-0 lg:ml-12">
         @if ($article->category)
             <a href="" class="underline font-bold text-slate-900 text-lg"> {{ $article->category ->name}} </a>
         @endif
-        <a href="" class="underline font-bold text-slate-900 text-lg">Catégorie</a>
+        {{-- <a href="" class="underline font-bold text-slate-900 text-lg">Catégorie</a> --}}
         <h1 class="font-bold text-slate-900 text-3xl lg:text-5xl leading-tight"> {{ $article->title }} </h1>
         <ul class="flex flex-wrap gap-2">
             <li><a href="" class="px-3 py-1 bg-indigo-700 text-indigo-50 rounded-full text-sm">Tag 1</a></li>
